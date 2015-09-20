@@ -1,0 +1,11 @@
+{
+	"name": "gamut-visualizer",
+	"version": "0.1.0",
+	"description": "3D visualization of gamut in iccMAX profiles",
+	"author": "Magnus Bjerke Vik <mbvett@gmail.com>",
+	"devDependencies": {
+	},
+	"scripts": {
+	},
+	"license": "MIT"
+}
