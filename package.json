@@ -1,11 +1,21 @@
 {
-	"name": "gamut-visualizer",
-	"version": "0.1.0",
-	"description": "3D visualization of gamut in iccMAX profiles",
-	"author": "Magnus Bjerke Vik <mbvett@gmail.com>",
-	"devDependencies": {
-	},
-	"scripts": {
-	},
-	"license": "MIT"
+  "name": "gamut-visualizer",
+  "version": "0.1.0",
+  "description": "3D visualization of gamut in iccMAX profiles",
+  "author": "Magnus Bjerke Vik <mbvett@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.1",
+    "grunt-html-build": "^0.5.1"
+  },
+  "dependencies": {
+    "angular": "^1.4.6",
+    "bootstrap": "^3.3.5"
+  },
+  "scripts": {
+    "build-dev": "grunt"
+  }
 }
