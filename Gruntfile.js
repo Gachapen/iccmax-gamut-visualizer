@@ -13,6 +13,30 @@ module.exports = function(grunt) {
               'angular.js'
             ],
             dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/bootstrap/dist/js',
+            src: [
+              'bootstrap.js'
+            ],
+            dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/bootstrap/dist/css',
+            src: [
+              'bootstrap.css'
+            ],
+            dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/jquery/dist',
+            src: [
+              'jquery.js'
+            ],
+            dest: 'build/lib/'
           }
         ]
 	    },
@@ -37,13 +61,18 @@ module.exports = function(grunt) {
           beautify: true,
           scripts: {
             libs: [
-              'build/lib/angular.js'
+              'build/lib/jquery.js',
+              'build/lib/angular.js',
+              'build/lib/bootstrap.js'
             ],
             app: [
               'build/app.js'
             ]
           },
           styles: {
+            libs: [
+              'build/lib/bootstrap.css'
+            ]
           }
         }
       }
