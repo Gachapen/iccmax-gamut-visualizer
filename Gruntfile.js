@@ -46,7 +46,8 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'app/',
             src: [
-              'app.js'
+              'app.js',
+              'app.css'
             ],
             dest: 'build/'
           }
@@ -71,6 +72,7 @@ module.exports = function(grunt) {
           },
           styles: {
             libs: [
+              'build/app.css',
               'build/lib/bootstrap.css'
             ]
           }
