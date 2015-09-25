@@ -81,13 +81,20 @@ module.exports = function(grunt) {
     },
     clean: [
       'build/*'
-    ]
+    ],
+    watch: {
+      all: {
+        files: ['app/**/*'],
+	tasks: ['default']
+      }
+    }
   });
 
   // Load the plugins.
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-html-build');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
   grunt.registerTask('default', [
