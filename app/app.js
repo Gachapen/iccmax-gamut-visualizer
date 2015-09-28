@@ -1,7 +1,15 @@
 (function(){
     var app = angular.module('iccmax-gamut', []);
-    app.controller('AppController', [function() {
+    app.controller('AppController', ['$scope', function($scope) {
         this.title = 'GAMUT';
+
+        var readProfile = function(file) {
+            fileReader = new FileReader();
+            fileReader.onloadend = function() {
+                console.log("Read a file: " + fileReader.result);
+            }
+            fileReader.readAsBinaryString(file);
+        }
 
         var renderCanvas = document.getElementById("visualizer-canvas");
         var gl = renderCanvas.getContext("webgl") || renderCanvas.getContext('experimental-webgl');
@@ -35,12 +43,9 @@
 
             var files = e.dataTransfer.files;
             if (files.length > 0) {
-                fileReader = new FileReader();
-                fileReader.onloadend = function() {
-                    console.log("Dropped a file: " + fileReader.result);
-                }
-                var file = files[0];
-                fileReader.readAsBinaryString(file);
+                $scope.$apply(function() {
+                    readProfile(files[0]);
+                });
             }
 
             return false;
@@ -49,6 +54,16 @@
         var visualizer = document.getElementById("visualizer");
         visualizer.addEventListener('dragover', handleDragOver, false);
         visualizer.addEventListener('drop', handleFileDrop, false);
+
+        var uploadProfile = function() {
+           var file = this.files[0];
+           $scope.$apply(function() {
+               readProfile(file);
+           });
+        }
+
+        var profileUpload = document.getElementById("profile-upload");
+        profileUpload.addEventListener('change', uploadProfile, false);
     }]);
 })();
 
