@@ -51,3 +51,5 @@
         visualizer.addEventListener('drop', handleFileDrop, false);
     }]);
 })();
+
+/* vim: set ts=4 sw=4 expandtab: */
