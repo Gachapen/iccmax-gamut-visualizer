@@ -1,4 +1,4 @@
-<html ng-app="iccmax-gamut">
+<html lang="en" ng-app="iccmax-gamut">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,33 +10,36 @@
     <!-- /build -->
 </head>
 <body ng-controller="AppController as app">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">MAX Gamviz</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-    <div class="container-fluid">
-        <div id="controlpanel" class="col-md-4">
-            <div>Open profile</div>
-            <input type="file" id="profile-upload"></button>
-        </div>
-        <div id="visualizer" class="col-md-8">
-            <canvas id="visualizer-canvas"></canvas>
+    <div class="container">
+        <nav class="navbar navbar-default">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">MAX Gamviz</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+              <!--<ul class="nav navbar-nav">-->
+              <!--  <li class="active"><a href="#">Home</a></li>-->
+              <!--  <li><a href="#about">About</a></li>-->
+              <!--  <li><a href="#contact">Contact</a></li>-->
+              <!--</ul>-->
+            </div><!--/.nav-collapse -->
+          </div>
+        </nav>
+        <div id="content" class="container-fluid">
+            <div id="controlpanel" class="col-md-4">
+                <h3>Select profile</h3>
+                <input type="file" id="profile-upload"></input>
+                <p>Or drag a profile onto the black box.</p>
+            </div>
+            <div id="visualizer" class="col-md-8">
+                <canvas id="visualizer-canvas"></canvas>
+            </div>
         </div>
     </div>
 

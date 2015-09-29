@@ -1,15 +1,19 @@
 body {
-    padding-top: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#content {
+}
+
+#visualizer {
 }
 
 #visualizer-canvas {
     width: 100%;
-    height: 100%;
 }
 
 #controlpanel {
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 
 /* vim: set ts=4 sw=4 expandtab: */
