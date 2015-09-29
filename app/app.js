@@ -12,6 +12,11 @@
             var numVertices = dv.getUint32(index + 12);
             var numFaces = dv.getUint32(index + 16);
 
+            console.log("PCS channels: " + numPcsChannels);
+            console.log("Device channels: " + numDeviceChannels);
+            console.log("Vertices: " + numVertices);
+            console.log("Faces: " + numFaces);
+
             var gamut = {
                 vertices: [],
                 faces: [],
@@ -25,17 +30,26 @@
                 face[1] = dv.getUint32(faceIndex + 4);
                 face[2] = dv.getUint32(faceIndex + 8);
 
+                console.log("Face " + i + ": [" + face[0] + "," + face[1] + "," + face[2] + "]");
+
                 gamut.faces.push(face);
 
                 faceIndex = faceIndex + 12;
             }
 
             var vertexIndex = faceIndex;
-            for (var i = 0; i < numFaces; ++i) {
+            for (var i = 0; i < numVertices; ++i) {
                 var vertex = new Array(numPcsChannels);
-                for (var j = 0; j < numPcsChannels; ++i) {
-                    vertex[j] = dv.getFloat32(vertexIndex + i * 4);
+                for (var chanNum = 0; chanNum < numPcsChannels; ++chanNum) {
+                    vertex[chanNum] = dv.getFloat32(vertexIndex + chanNum * 4);
                 }
+
+                var log = "Vertex " + i + ": [" + vertex[0];
+                for (var chanNum = 1; chanNum < numPcsChannels; ++chanNum) {
+                    log = log + "," + vertex[chanNum];
+                }
+                log = log + "]";
+                console.log(log);
 
                 gamut.vertices.push(vertex);
 
@@ -83,7 +97,7 @@
                     console.log("Offset: " + offset);
                     console.log("Size: " + size);
 
-                    if (signature == 'gbd ') {
+                    if (signature == 'gbd0') {
                         activeGamut = readGamut(dv, offset, size);
                     }
 
