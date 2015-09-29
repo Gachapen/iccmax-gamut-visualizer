@@ -37,6 +37,22 @@ module.exports = function(grunt) {
               'jquery.js'
             ],
             dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/chromatist/lib',
+            src: [
+              'chromatist.js'
+            ],
+            dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/underscore',
+            src: [
+              'underscore.js'
+            ],
+            dest: 'build/lib/'
           }
         ]
 	    },
@@ -64,7 +80,9 @@ module.exports = function(grunt) {
             libs: [
               'build/lib/jquery.js',
               'build/lib/angular.js',
-              'build/lib/bootstrap.js'
+              'build/lib/bootstrap.js',
+              'build/lib/underscore.js',
+              'build/lib/chromatist.js'
             ],
             app: [
               'build/app.js'
