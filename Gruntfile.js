@@ -53,6 +53,22 @@ module.exports = function(grunt) {
               'underscore.js'
             ],
             dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/gl-matrix/dist',
+            src: [
+              'gl-matrix-min.js'
+            ],
+            dest: 'build/lib/'
+          },
+          {
+            expand: true,
+            cwd: 'lib',
+            src: [
+              '*.js'
+            ],
+            dest: 'build/lib/'
           }
         ]
 	    },
@@ -82,7 +98,10 @@ module.exports = function(grunt) {
               'build/lib/angular.js',
               'build/lib/bootstrap.js',
               'build/lib/underscore.js',
-              'build/lib/chromatist.js'
+              'build/lib/chromatist.js',
+              'build/lib/webgl-utils.js',
+              'build/lib/gl-matrix-min.js',
+              'build/lib/J3DI.js'
             ],
             app: [
               'build/app.js'
@@ -103,7 +122,7 @@ module.exports = function(grunt) {
     watch: {
       all: {
         files: ['app/**/*'],
-	tasks: ['default']
+        tasks: ['default']
       }
     }
   });
@@ -121,3 +140,5 @@ module.exports = function(grunt) {
     'htmlbuild:dev'
   ]);
 };
+
+/* vim: set ts=2 sw=2 expandtab: */

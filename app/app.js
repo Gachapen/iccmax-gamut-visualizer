@@ -107,18 +107,6 @@
             fileReader.readAsArrayBuffer(file);
         }
 
-        var renderCanvas = document.getElementById("visualizer-canvas");
-        var gl = renderCanvas.getContext("webgl") || renderCanvas.getContext('experimental-webgl');
-        if (!gl) {
-            console.log("Error: Can't create WebGL context");
-        }
-
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
-
-        gl.viewport(0, 0, renderCanvas.width, renderCanvas.height);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
         var handleDragOver = function(e) {
             if (e.preventDefault) {
                 e.preventDefault();
@@ -147,10 +135,6 @@
             return false;
         };
 
-        var visualizer = document.getElementById("visualizer");
-        visualizer.addEventListener('dragover', handleDragOver, false);
-        visualizer.addEventListener('drop', handleFileDrop, false);
-
         var uploadProfile = function() {
            var file = this.files[0];
            $scope.$apply(function() {
@@ -158,8 +142,83 @@
            });
         }
 
+        var loadShaderProgram = function(gl) {
+            vshader = loadShader(gl, 'vshader');
+            fshader = loadShader(gl, 'fshader');
+
+            var program = gl.createProgram();
+            gl.attachShader(program, vshader);
+            gl.attachShader(program, fshader);
+
+            var attribs = ['position', 'color'];
+            for (var i = 0; i < attribs.length; ++i) {
+                gl.bindAttribLocation(program, i, attribs[i]);
+            }
+
+            gl.linkProgram(program);
+
+            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (!linked && !gl.isContextLost()) {
+                var error = gl.getProgramInfoLog(program);
+                console.log("Error in program linking: " + error);
+
+                gl.deleteProgram(program);
+                gl.deleteProgram(fragmentShader);
+                gl.deleteProgram(vertexShader);
+
+                return null;
+            }
+
+            return program;
+        }
+
+        var initializeGl = function() {
+            var program = loadShaderProgram(gl);
+            if (!program) {
+                return;
+            }
+
+            gl.useProgram(program);
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clearDepth(10000);
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        }
+
+        var resizeVisualizer = function() {
+            if (renderCanvas.clientWidth == renderCanvas.width && renderCanvas.clientHeight == renderCanvas.height) {
+                return;
+            }
+
+            renderCanvas.width = renderCanvas.clientWidth;
+            renderCanvas.height = renderCanvas.clientHeight;
+
+            gl.viewport(0, 0, renderCanvas.width, renderCanvas.height);
+        }
+
+        var renderVisualizer = function() {
+            resizeVisualizer();
+
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        }
+
+        var visualizer = document.getElementById("visualizer");
+        visualizer.addEventListener('dragover', handleDragOver, false);
+        visualizer.addEventListener('drop', handleFileDrop, false);
+
         var profileUpload = document.getElementById("profile-upload");
         profileUpload.addEventListener('change', uploadProfile, false);
+
+        var renderCanvas = document.getElementById("visualizer-canvas");
+        var gl = WebGLUtils.setupWebGL(renderCanvas);
+        if (!gl) {
+            console.log("Error: Can't create WebGL context");
+        }
+
+        initializeGl();
+
+        window.requestAnimationFrame(renderVisualizer);
     }]);
 })();
 

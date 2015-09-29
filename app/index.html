@@ -43,6 +43,31 @@
         </div>
     </div>
 
+    <script id="vshader" type="x-shader/x-vertex">
+        uniform mat4 modelViewProjMatrix;
+
+        attribute vec4 position;
+        attribute vec4 color;
+
+        varying vec4 fragColor;
+
+        void main()
+        {
+            gl_Position = modelViewProjMatrix * position;
+            fragColor = color;
+        }
+    </script>
+    <script id="fshader" type="x-shader/x-fragment">
+        precision mediump float;
+
+        varying vec4 fragColor;
+
+        void main()
+        {
+            gl_FragColor = fragColor;
+        }
+    </script>
+
     <!-- build:script libs -->
     <!-- /build -->
     <!-- build:script app -->
