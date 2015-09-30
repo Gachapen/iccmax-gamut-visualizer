@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.00</ProfileVersion>
+    <ProfileDeviceClass>mntr</ProfileDeviceClass>
+    <DataColourSpace>RGB </DataColourSpace>
+    <PCS>XYZ </PCS>
+    <CreationDateTime>2015-09-28T17:55:48</CreationDateTime>
+    <PrimaryPlatform>APPL</PrimaryPlatform>
+    <ProfileFlags EmbeddedInFile="false" UseWithEmbeddedDataOnly="false"/>
+    <DeviceManufacturer>none</DeviceManufacturer>
+    <DeviceModel>    </DeviceModel>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Relative Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.96420288" Y="1.00000000" Z="0.82490540"/>
+    </PCSIlluminant>
+    <ProfileCreator>CIGL</ProfileCreator>
+    <ProfileID>73E7BCE71615206A2AFF2FBDF8CFA845</ProfileID>
+  </Header>
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUK"><![CDATA[Magnus Bjerke Vik]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUK"><![CDATA[Magnus' amazing V4 Matrix / TRC profile]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+    <XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.96418762" Y="1.00000000" Z="0.82490540"/>
+    </XYZType>
+    <s15Fixed16NumberType>
+      <TagSignature>chad</TagSignature>
+      <Array>
+            1.00000000 0.00000000 0.00000000 -0.00003052 1.00001526 0.00000000 0.00000000 0.00000000
+            1.00000000      </Array>
+    </s15Fixed16NumberType>
+    <curveType>
+      <TagSignature>rTRC</TagSignature>
+      <Curve>
+         803
+      </Curve>
+    </curveType>
+    <curveType>
+      <TagSignature>gTRC</TagSignature>
+      <Curve>
+         425
+      </Curve>
+    </curveType>
+    <curveType>
+      <TagSignature>bTRC</TagSignature>
+      <Curve>
+         542
+      </Curve>
+    </curveType>
+    <XYZType>
+      <TagSignature>rXYZ</TagSignature>
+      <XYZNumber X="0.35398" Y="0.22571" Z="0.01712"/>
+    </XYZType>
+    <XYZType>
+      <TagSignature>gXYZ</TagSignature>
+      <XYZNumber X="0.39649" Y="0.71883" Z="0.06167"/>
+    </XYZType>
+    <XYZType>
+      <TagSignature>bXYZ</TagSignature>
+      <XYZNumber X="0.13077" Y="0.09423" Z="0.78347"/>
+    </XYZType>
+    <gamutBoundaryDescType>
+        <TagSignature>gbd0</TagSignature>
+        <Vertices>
+            <PCSValues channels="3">
+                -0.029593 0.025007 0.007702
+                0.96418 1.00000 0.82490
+                0.35398 0.22571 0.01712
+                0.39649 0.71883 0.06167
+                0.13077 0.09423 0.78347
+            </PCSValues>
+            <DeviceValues channels="3">
+                -0.029593 0.025007 0.007702
+                0.96418 1.00000 0.82490
+                0.35398 0.22571 0.01712
+                0.39649 0.71883 0.06167
+                0.13077 0.09423 0.78347
+            </DeviceValues>
+        </Vertices>
+        <Triangles>
+            <T>0 3 4</T>
+            <T>0 2 3</T>
+            <T>0 4 2</T>
+            <T>1 4 3</T>
+            <T>1 3 2</T>
+            <T>1 2 4</T>
+        </Triangles>
+    </gamutBoundaryDescType>
+  </Tags>
+</IccProfile>
+
+<!-- vim: set ts=4 sw=4 expandtab: -->
