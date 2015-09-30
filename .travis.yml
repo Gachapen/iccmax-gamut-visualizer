@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "stable"
+install:
+  - npm install -g grunt-cli
+  - npm install
+script:
+  - grunt
+
+# vim: set ts=2 sw=2 expandtab:
