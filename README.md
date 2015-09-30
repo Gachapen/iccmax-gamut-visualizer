@@ -1,10 +1,10 @@
 ## iccMAX Gamviz
 A gamut visualizer for iccMAX profiles
 
-## Status
+#### Status
 [![Build Status](https://travis-ci.org/Gachapen/iccmax-gamut-visualizer.svg?branch=master)](https://travis-ci.org/Gachapen/iccmax-gamut-visualizer)
 
-## Dependencies
+#### Dependencies
 * npm
   * sudo apt-get install npm, or
   * sudo pacman -S npm, or
@@ -13,9 +13,9 @@ A gamut visualizer for iccMAX profiles
 * grunt-cli
   * npm install -g grunt-cli
 
-## Build
+#### Build
 1. npm install
 2. grunt
 
-## Run
+#### Run
 Open build/index.html
