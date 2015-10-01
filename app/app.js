@@ -143,12 +143,12 @@
         }
 
         var loadShaderProgram = function(gl) {
-            vshader = loadShader(gl, 'vshader');
-            fshader = loadShader(gl, 'fshader');
+            vertexShader = loadShader(gl, 'vshader');
+            fragmentShader = loadShader(gl, 'fshader');
 
             var program = gl.createProgram();
-            gl.attachShader(program, vshader);
-            gl.attachShader(program, fshader);
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
 
             var attribs = ['position', 'color'];
             for (var i = 0; i < attribs.length; ++i) {
@@ -157,14 +157,15 @@
 
             gl.linkProgram(program);
 
+            gl.deleteShader(fragmentShader);
+            gl.deleteShader(vertexShader);
+
             var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
             if (!linked && !gl.isContextLost()) {
                 var error = gl.getProgramInfoLog(program);
                 console.log("Error in program linking: " + error);
 
                 gl.deleteProgram(program);
-                gl.deleteProgram(fragmentShader);
-                gl.deleteProgram(vertexShader);
 
                 return null;
             }
