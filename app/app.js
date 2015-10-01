@@ -6,6 +6,28 @@
             faces: []
         }
 
+        var getGamutMockData = function() {
+            return {
+                numPcsChannels: 3,
+                pcsSpace: 'Lab ',
+                vertices: [
+                    [0.0, 0.0, 0.0], // blackpoint
+                    [100.0, 0.0, 0.0], // whitepoint
+                    [50.0, 60.0, 10.0], // red primary
+                    [50.0, -60.0, 60.0], // green primary
+                    [50.0, -40.0, -60.0] // blue primary
+                ],
+                faces: [
+                    [0, 3, 4],
+                    [0, 2, 3],
+                    [0, 4, 2],
+                    [1, 4, 3],
+                    [1, 3, 2],
+                    [1, 2, 4]
+                ]
+            };
+        }
+
         var readGamut = function(dv, index, size) {
             var numPcsChannels = dv.getUint16(index + 8);
             var numDeviceChannels = dv.getUint16(index + 10);
@@ -320,6 +342,7 @@
 
         window.requestAnimationFrame(renderVisualizer);
 
+        activeGamut = getGamutMockData();
         updateModel();
     }]);
 })();
