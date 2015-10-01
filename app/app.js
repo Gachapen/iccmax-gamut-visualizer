@@ -173,6 +173,96 @@
             return program;
         }
 
+        function makeSpheres(count, radius, lats, longs)
+        {
+            var color = [1.0, 1.0, 1.0, 1.0];
+
+            var numTotalVertices = count * (lats + 1) * (longs + 1);
+            var channelsPerVertex = 4;
+            var channelsPerColor = 4;
+            var bufferSize = numTotalVertices * channelsPerVertex + numTotalVertices * channelsPerColor;
+
+            var vertexData = new Float32Array(bufferSize);
+
+            var indicesPerFace = 6;
+            var indexSize = count * lats * longs * indicesPerFace;
+            var indexData = new Int32Array(indexSize);
+
+            var geometryIndex = 0;
+            var colorIndex = 0;
+            var indexIndex = 0;
+
+            for (var sphereNum = 0; sphereNum < count; ++sphereNum) {
+                for (var latNumber = 0; latNumber <= lats; ++latNumber) {
+                    for (var longNumber = 0; longNumber <= longs; ++longNumber) {
+                        var theta = latNumber * Math.PI / lats;
+                        var phi = longNumber * 2 * Math.PI / longs;
+                        var sinTheta = Math.sin(theta);
+                        var sinPhi = Math.sin(phi);
+                        var cosTheta = Math.cos(theta);
+                        var cosPhi = Math.cos(phi);
+
+                        var x = cosPhi * sinTheta;
+                        var y = cosTheta;
+                        var z = sinPhi * sinTheta;
+                        var u = 1-(longNumber/longs);
+                        var v = latNumber/lats;
+
+                        geometryData[geometryIndex] = radius * x;
+                        geometryData[geometryIndex + 1] = radius * y;
+                        geometryData[geometryIndex + 2] = radius * z;
+                        geometryData[geometryIndex + 3] = 1.0;
+                        geometryIndex += channelsPerVertex;
+
+                        colorData[colorIndex] = color[0];
+                        colorData[colorIndex + 1] = color[1];
+                        colorData[colorIndex + 2] = color[2];
+                        colorData[colorIndex + 3] = color[3];
+                        colorIndex += channelsPerColor;
+                    }
+                }
+
+                for (var latNumber = 0; latNumber < lats; ++latNumber) {
+                    for (var longNumber = 0; longNumber < longs; ++longNumber) {
+                        var first = (latNumber * (longs+1)) + longNumber;
+                        var second = first + longs + 1;
+
+                        indexData[indexIndex] = first;
+                        indexData[indexIndex + 1] = second;
+                        indexData[indexIndex + 2] = first + 1;
+
+                        indexData[indexIndex + 3] = second;
+                        indexData[indexIndex + 4] = second + 1;
+                        indexData[indexIndex + 5] = first + 1;
+
+                        indexIndex += indicesPerFace;
+                    }
+                }
+            }
+
+            return retval = {
+                vertexData: geometryData,
+                indexData: indexData
+            };
+        }
+
+        var initializeModel = function() {
+            model.vertexBuffer = gl.createBuffer();
+            model.indexBuffer = gl.createBuffer();
+
+            gl.enableVertexAttribArray(0);
+            gl.enableVertexAttribArray(1);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, model.vertexBuffer);
+            gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 8, 0);
+            gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 8, 4);
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, model.indexBuffer);
+        }
+
+        var updateModel = function() {
+        }
+
         var initializeGl = function() {
             var program = loadShaderProgram(gl);
             if (!program) {
@@ -185,6 +275,8 @@
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.BLEND);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+            initializeModel();
         }
 
         var resizeVisualizer = function() {
@@ -217,9 +309,18 @@
             console.log("Error: Can't create WebGL context");
         }
 
+        var model = {
+            vertexBuffer: 0,
+            indexBuffer: 0,
+            vertexData: null,
+            indexData: null
+        }
+
         initializeGl();
 
         window.requestAnimationFrame(renderVisualizer);
+
+        updateModel();
     }]);
 })();
 
