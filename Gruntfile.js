@@ -64,6 +64,14 @@ module.exports = function(grunt) {
           },
           {
             expand: true,
+            cwd: 'node_modules/three.js/build',
+            src: [
+              'three.js'
+            ],
+            dest: 'build/lib/'
+          },
+          {
+            expand: true,
             cwd: 'lib',
             src: [
               '*.js'
@@ -101,7 +109,8 @@ module.exports = function(grunt) {
               'build/lib/chromatist.js',
               'build/lib/webgl-utils.js',
               'build/lib/gl-matrix-min.js',
-              'build/lib/J3DI.js'
+              'build/lib/J3DI.js',
+              'build/lib/three.js'
             ],
             app: [
               'build/app.js'
