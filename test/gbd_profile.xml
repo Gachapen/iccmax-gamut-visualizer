@@ -5,7 +5,7 @@
     <ProfileVersion>5.00</ProfileVersion>
     <ProfileDeviceClass>mntr</ProfileDeviceClass>
     <DataColourSpace>RGB </DataColourSpace>
-    <PCS>XYZ </PCS>
+    <PCS>Lab </PCS>
     <CreationDateTime>2015-09-28T17:55:48</CreationDateTime>
     <PrimaryPlatform>APPL</PrimaryPlatform>
     <ProfileFlags EmbeddedInFile="false" UseWithEmbeddedDataOnly="false"/>
@@ -72,27 +72,29 @@
         <TagSignature>gbd0</TagSignature>
         <Vertices>
             <PCSValues channels="3">
-                -0.029593 0.025007 0.007702
-                0.96418 1.00000 0.82490
-                0.35398 0.22571 0.01712
-                0.39649 0.71883 0.06167
-                0.13077 0.09423 0.78347
+                0.0 0.0 0.0
+                100.0 0.0 0.0
+                50.0 50.0 60.0
+                50.0 -10.0 80.0
+                50.0 -60.0 70.0
+                50.0 -50.0 -10.0
+                50.0 50.0 -80.0
+                50.0 70.0 -50.0
             </PCSValues>
-            <DeviceValues channels="3">
-                -0.029593 0.025007 0.007702
-                0.96418 1.00000 0.82490
-                0.35398 0.22571 0.01712
-                0.39649 0.71883 0.06167
-                0.13077 0.09423 0.78347
-            </DeviceValues>
         </Vertices>
         <Triangles>
-            <T>0 3 4</T>
             <T>0 2 3</T>
-            <T>0 4 2</T>
-            <T>1 4 3</T>
+            <T>0 3 4</T>
+            <T>0 4 5</T>
+            <T>0 5 6</T>
+            <T>0 6 7</T>
+            <T>0 7 2</T>
             <T>1 3 2</T>
-            <T>1 2 4</T>
+            <T>1 4 3</T>
+            <T>1 5 4</T>
+            <T>1 6 5</T>
+            <T>1 7 6</T>
+            <T>1 2 7</T>
         </Triangles>
     </gamutBoundaryDescType>
   </Tags>

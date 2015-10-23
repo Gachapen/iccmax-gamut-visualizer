@@ -48,22 +48,6 @@ module.exports = function(grunt) {
           },
           {
             expand: true,
-            cwd: 'node_modules/underscore',
-            src: [
-              'underscore.js'
-            ],
-            dest: 'build/lib/'
-          },
-          {
-            expand: true,
-            cwd: 'node_modules/gl-matrix/dist',
-            src: [
-              'gl-matrix-min.js'
-            ],
-            dest: 'build/lib/'
-          },
-          {
-            expand: true,
             cwd: 'node_modules/three.js/build',
             src: [
               'three.js'
@@ -107,9 +91,6 @@ module.exports = function(grunt) {
               'build/lib/bootstrap.js',
               'build/lib/underscore.js',
               'build/lib/chromatist.js',
-              'build/lib/webgl-utils.js',
-              'build/lib/gl-matrix-min.js',
-              'build/lib/J3DI.js',
               'build/lib/three.js'
             ],
             app: [

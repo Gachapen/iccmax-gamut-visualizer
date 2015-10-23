@@ -1,33 +1,13 @@
 (function(){
     var app = angular.module('iccmax-gamut', []);
     app.controller('AppController', ['$scope', function($scope) {
+        var ctrl = this;
+
         var activeGamut = {
             numPcsChannels: 2,
             pcsSpace: '    ',
             vertices: [],
             faces: []
-        }
-
-        var getGamutMockData = function() {
-            return {
-                numPcsChannels: 3,
-                pcsSpace: 'Lab ',
-                vertices: [
-                    [0.0, 0.0, 0.0], // blackpoint
-                    [100.0, 0.0, 0.0], // whitepoint
-                    [50.0, 60.0, 10.0], // red primary
-                    [50.0, -60.0, 60.0], // green primary
-                    [50.0, -40.0, -60.0] // blue primary
-                ],
-                faces: [
-                    [0, 3, 4],
-                    [0, 2, 3],
-                    [0, 4, 2],
-                    [1, 4, 3],
-                    [1, 3, 2],
-                    [1, 2, 4]
-                ]
-            };
         }
 
         var readGamut = function(dv, index, size) {
@@ -96,6 +76,13 @@
                     return false;
                 }
 
+                var pcsIndex = 20;
+                var pcs = String.fromCharCode(
+                    dv.getUint8(pcsIndex),
+                    dv.getUint8(pcsIndex + 1),
+                    dv.getUint8(pcsIndex + 2),
+                    dv.getUint8(pcsIndex + 3));
+
                 var tagTableIndex = 128;
                 var tagCountIndex = tagTableIndex;
 
@@ -123,11 +110,14 @@
 
                     if (signature == 'gbd0') {
                         activeGamut = readGamut(dv, offset, size);
+                        activeGamut.pcsSpace = pcs;
+                        ctrl.updateModel();
                     }
 
                     tagIndex = tagIndex + 12;
                 }
             }
+
             fileReader.readAsArrayBuffer(file);
         }
 
@@ -136,7 +126,10 @@
                 e.preventDefault();
             }
 
-            e.dataTransfer.dropEffect = 'copy';
+            var dataTransfer = e.originalEvent.dataTransfer;
+            if (dataTransfer) {
+                dataTransfer.dropEffect = 'copy';
+            }
 
             return false;
         };
@@ -149,11 +142,14 @@
                 e.preventDefault();
             }
 
-            var files = e.dataTransfer.files;
-            if (files.length > 0) {
-                $scope.$apply(function() {
-                    readProfile(files[0]);
-                });
+            var dataTransfer = e.originalEvent.dataTransfer;
+            if (dataTransfer) {
+                var files = dataTransfer.files;
+                if (files.length > 0) {
+                    $scope.$apply(function() {
+                        readProfile(files[0]);
+                    });
+                }
             }
 
             return false;
@@ -166,28 +162,124 @@
            });
         }
 
-        var updateModel = function() {
-                var geometry = new THREE.SphereGeometry(0.1);
-                var material = new THREE.MeshBasicMaterial({color: 0xffff00} );
-                var sphere = new THREE.Mesh(geometry, material);
+        var getVertexPosition = function(vertex) {
+            if (activeGamut.pcsSpace == 'Lab ') {
+                return new THREE.Vector3(vertex[1], vertex[0], -vertex[2]);
+            } else {
+                throw new Error("Can't get vertex position: PCS space \"" + activeGamut.pcsSpace + "\" is unknown");
+            }
+        }
+
+        var getVertexColor = function(vertex) {
+            var labConv = chromatist.cielab.Converter(activeGamut.whitepoint);
+            var XYZ = labConv.to_XYZ(vertex);
+
+            var adapt = chromatist.cat.Converter(activeGamut.whitepoint, chromatist.cie.standard_whitepoints.D65,'linear bradford');
+            XYZn = adapt.forward(XYZ);
+
+            var rgbConv = chromatist.rgb.Converter();
+            var rgb = rgbConv.from_XYZ(XYZn);
+
+            // Clamp values in case they are too small/large.
+            rgb[0] = Math.max(Math.min(rgb[0], 1), 0);
+            rgb[1] = Math.max(Math.min(rgb[1], 1), 0);
+            rgb[2] = Math.max(Math.min(rgb[2], 1), 0);
+
+            return new THREE.Color().fromArray(rgb);
+        }
+
+        var pointModelMaker = {
+            mesh: null,
+            make: function() {
+                var geometry = new THREE.Geometry();
 
                 for (var i = 0; i < activeGamut.vertices.length; ++i) {
-                        var vertexSphere = sphere.clone();
-
-                        var vertex = activeGamut.vertices[i];
-                        vertexSphere.position.set(vertex[1] / 50, vertex[0] / 50, vertex[2] / 50);
-
-                        //var labConv = chromatist.cielab.Converter();
-                        //var rgbConv = chromatist.rgb.Converter();
-                        //var XYZ = labConv.to_XYZ(vertex);
-                        //var rgb = rgbConv.from_XYZ(XYZ);
-                        //rgb[0] = Math.max(Math.min(rgb[0], 1), 0);
-                        //rgb[1] = Math.max(Math.min(rgb[1], 1), 0);
-                        //rgb[2] = Math.max(Math.min(rgb[2], 1), 0);
-                        //vertexSphere.material.color = parseInt(chromatist.rgb.to_hex(rgb).replace(/^#/, ''), 16);
-
-                        scene.add(vertexSphere);
+                    var vertex = activeGamut.vertices[i];
+                    geometry.vertices.push(getVertexPosition(vertex));
+                    geometry.colors.push(getVertexColor(vertex));
                 }
+
+                var material = new THREE.PointsMaterial({
+                    vertexColors: THREE.VertexColors,
+                    size: 20
+                });
+                this.mesh = new THREE.Points(geometry, material);
+
+                scene.add(this.mesh);
+            },
+            destroy: function() {
+                if (this.mesh) {
+                    scene.remove(this.mesh);
+                    this.mesh = null;
+                }
+            }
+        }
+
+        var makeModelMesh = function() {
+            var geometry = new THREE.Geometry();
+
+            for (var i = 0; i < activeGamut.vertices.length; ++i) {
+                var vertex = activeGamut.vertices[i];
+
+                geometry.vertices.push(getVertexPosition(vertex));
+            }
+
+            for (var i = 0; i < activeGamut.faces.length; ++i) {
+                var face = activeGamut.faces[i];
+
+                var a = face[2];
+                var b = face[1];
+                var c = face[0];
+                var normals = [];
+                var colors = [
+                    getVertexColor(activeGamut.vertices[a]),
+                    getVertexColor(activeGamut.vertices[b]),
+                    getVertexColor(activeGamut.vertices[c])
+                ];
+                geometry.faces.push(new THREE.Face3(a, b, c, normals, colors));
+            }
+
+            var material = new THREE.MeshBasicMaterial({
+                vertexColors: THREE.FaceColors
+            });
+
+            var mesh = new THREE.Mesh(geometry, material);
+            return mesh;
+        }
+
+        var solidModelMaker = {
+            mesh: null,
+            make: function() {
+                this.mesh = makeModelMesh();
+                scene.add(this.mesh);
+            },
+            destroy: function() {
+                if (this.mesh) {
+                    scene.remove(this.mesh);
+                    this.mesh = null;
+                }
+            }
+        }
+
+        var wireframeModelMaker = {
+            mesh: null,
+            make: function() {
+                this.mesh = makeModelMesh();
+                this.mesh.material.wireframe = true;
+                scene.add(this.mesh);
+            },
+            destroy: function() {
+                if (this.mesh) {
+                    scene.remove(this.mesh);
+                    this.mesh = null;
+                }
+            }
+        }
+
+        ctrl.updateModel = function() {
+            ctrl.previousModelMaker.maker.destroy();
+            ctrl.modelMaker.maker.make();
+            ctrl.previousModelMaker = ctrl.modelMaker;
         }
 
         var profileUpload = $("#profile-upload");
@@ -198,18 +290,22 @@
         visualizer.on('drop', handleFileDrop);
 
         var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(75, visualizer.innerWidth() / visualizer.innerHeight(), 0.1, 1000);
+
+        var camera = new THREE.PerspectiveCamera(10, visualizer.innerWidth() / visualizer.innerHeight(), 800, 1200);
 
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(visualizer.innerWidth(), visualizer.innerHeight());
+        renderer.setClearColor(0xCCCCCC);
         visualizer.append(renderer.domElement);
-
-        var modelPoints = [];
-
-        camera.position.z = 5;
 
         var rotatingCamera = false;
         var mousePos = new THREE.Vector2(0, 0);
+        var cameraRotation = new THREE.Euler(0, 0, 0, 'YXZ');
+        var cameraDistance = 1000;
+        var cameraHeight = 50;
+
+        camera.position.y = cameraHeight;
+        camera.position.z = cameraDistance;
 
         visualizer.mousedown(function(event) {
             if (event.button == 0) {
@@ -230,31 +326,40 @@
 
             if (rotatingCamera) {
                 var movementStrength = 0.01;
-                //var rotation = new THREE.Euler(movement.y * movementStrength, movement.x * movementStrength, 0);
-                var rotation = new THREE.Euler(0, -movement.x * movementStrength, 0);
-                //var rotation = new THREE.Euler(movement.y * movementStrength, 0, 0);
-                camera.position.applyEuler(rotation);
+                cameraRotation.x += -movement.y * movementStrength;
+                cameraRotation.y += -movement.x * movementStrength;
+                camera.position.set(0, 0, cameraDistance).applyEuler(cameraRotation);
+                camera.position.y += cameraHeight;
 
-                console.log(camera.rotation);
-                var target = new THREE.Vector3(0, 0, 0);
-                var targetDistance = new THREE.Vector3().subVectors(target, camera.position).normalize();
-                console.log(-targetDistance.z);
-                var xVector = new THREE.Vector2(Math.abs(targetDistance.z), targetDistance.y).normalize();
-                var yVector = new THREE.Vector2(-targetDistance.z, targetDistance.x).normalize();
-                camera.rotation.x = Math.atan2(xVector.y, xVector.x);
-                camera.rotation.y = -Math.atan2(yVector.y, yVector.x);
-                camera.rotation.z = 0;
-                camera.rotation.order = 'YXZ';
+                var target = new THREE.Vector3(0, cameraHeight, 0);
+                camera.lookAt(target);
             }
         });
 
-        activeGamut = getGamutMockData();
-        updateModel();
+        ctrl.modelMakers = [
+            {
+                name: "Solid",
+                maker: solidModelMaker
+            },
+            {
+                name: "Wireframe",
+                maker: wireframeModelMaker
+            },
+            {
+                name: "Point",
+                maker: pointModelMaker
+            }
+        ];
+
+        ctrl.modelMaker = ctrl.modelMakers[0];
+        ctrl.previousModelMaker = ctrl.modelMaker;
 
         function render() {
             requestAnimationFrame(render);
+
             renderer.render(scene, camera);
         }
+
         render();
     }]);
 })();
