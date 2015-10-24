@@ -325,7 +325,8 @@
 
         var scene = new THREE.Scene();
 
-        var camera = new THREE.PerspectiveCamera(10, visualizer.innerWidth() / visualizer.innerHeight(), 800, 1200);
+        //var camera = new THREE.PerspectiveCamera(8, visualizer.innerWidth() / visualizer.innerHeight(), 800, 1200);
+        var camera = new THREE.OrthographicCamera(-130, 130, 130, -130, 800, 1200);
 
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(visualizer.innerWidth(), visualizer.innerHeight());
