@@ -282,6 +282,40 @@
             ctrl.previousModelMaker = ctrl.modelMaker;
         }
 
+        var setupCielabAxes = function() {
+            var axisMaterial = new THREE.LineBasicMaterial({
+                    vertexColors: THREE.VertexColors
+            });
+
+            var aAxis = new THREE.Geometry();
+            aAxis.vertices.push(
+                    new THREE.Vector3(-100, 50, 0),
+                    new THREE.Vector3(0, 50, 0),
+                    new THREE.Vector3(0, 50, 0),
+                    new THREE.Vector3(100, 50, 0),
+                    new THREE.Vector3(0, 50, 100),
+                    new THREE.Vector3(0, 50, 0),
+                    new THREE.Vector3(0, 50, 0),
+                    new THREE.Vector3(0, 50, -100),
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(0, 100, 0)
+            );
+            aAxis.colors.push(
+                    new THREE.Color(0, 1, 0),
+                    new THREE.Color(0.5, 0.5, 0.5),
+                    new THREE.Color(0.5, 0.5, 0.5),
+                    new THREE.Color(1, 0, 0),
+                    new THREE.Color(0, 0, 1),
+                    new THREE.Color(0.5, 0.5, 0.5),
+                    new THREE.Color(0.5, 0.5, 0.5),
+                    new THREE.Color(1, 1, 0),
+                    new THREE.Color(0, 0, 0),
+                    new THREE.Color(1, 1, 1)
+            );
+            var aAxisLine = new THREE.LineSegments(aAxis, axisMaterial);
+            scene.add(aAxisLine);
+        }
+
         var profileUpload = $("#profile-upload");
         profileUpload.on('change', uploadProfile);
 
@@ -353,6 +387,8 @@
 
         ctrl.modelMaker = ctrl.modelMakers[0];
         ctrl.previousModelMaker = ctrl.modelMaker;
+
+        setupCielabAxes();
 
         function render() {
             requestAnimationFrame(render);
